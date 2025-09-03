@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحليلات - QssunReports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen p-6">
+
+    <!-- الشريط العلوي -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md rounded-lg mb-6 p-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-green-600 dark:text-green-400">لوحة التحليلات</h1>
+        <div class="flex items-center space-x-4 space-x-reverse">
+            <!-- زر الوضع الليلي -->
+            <button onclick="toggleDarkMode()" class="mr-2 text-sm bg-gray-200 dark:bg-gray-700 p-2 rounded">
+                <span id="darkModeText">🌙</span>
+            </button>
+            <a href="{% url 'staff:dashboard' %}" class="text-blue-600 hover:underline">العودة إلى لوحة التحكم</a>
+        </div>
+    </nav>
+
+    <!-- الإحصائيات الرئيسية -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- إجمالي المبيعات -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
+            <div class="text-4xl mb-2">📈</div>
+            <h3 class="font-semibold text-blue-700 dark:text-blue-400">تقارير المبيعات</h3>
+            <p class="text-3xl font-bold mt-2">{{ total_sales }}</p>
+        </div>
+
+        <!-- إجمالي التقارير الميدانية -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
+            <div class="text-4xl mb-2">🔧</div>
+            <h3 class="font-semibold text-green-700 dark:text-green-400">تقارير الفنيين</h3>
+            <p class="text-3xl font-bold mt-2">{{ total_field }}</p>
+        </div>
+
+        <!-- ملاحظات العملاء -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
+            <div class="text-4xl mb-2">📞</div>
+            <h3 class="font-semibold text-yellow-700 dark:text-yellow-400">ملاحظات العملاء</h3>
+            <p class="text-3xl font-bold mt-2">{{ total_customer }}</p>
+        </div>
+    </div>
+
+    <!-- أفضل موظف -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mb-8">
+        <h2 class="text-lg font-semibold mb-4 text-purple-700 dark:text-purple-400">🏆 أفضل موظف في المبيعات</h2>
+        {% if top_sales_employee %}
+            <p class="text-xl">
+                <strong>{{ top_sales_employee.employee__user__first_name }} {{ top_sales_employee.employee__user__last_name }}</strong>
+                — {{ top_sales_employee.count }} تقرير
+            </p>
+        {% else %}
+            <p>ما في تقارير بعد.</p>
+        {% endif %}
+    </div>
+
+    <!-- تحليل ملاحظات العملاء -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mb-8">
+        <h2 class="text-lg font-semibold mb-4 text-red-700 dark:text-red-400">📝 تحليل ملاحظات العملاء</h2>
+        <ul class="space-y-2">
+            <li>الشكاوى: <strong>{{ complaints }}</strong></li>
+            <li>الاقتراحات: <strong>{{ suggestions }}</strong></li>
+            <li>الشكر: <strong>{{ praises }}</strong></li>
+        </ul>
+    </div>
+
+    <!-- الإشعارات -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mb-8">
+        <h2 class="text-lg font-semibold mb-4 text-indigo-700 dark:text-indigo-400">🔔 الإشعارات</h2>
+        <p>تم إرسال: <strong>{{ notifications_sent }}</strong> إشعار</p>
+        <p>تم قراءة: <strong>{{ notifications_read }}</strong> إشعار</p>
+    </div>
+
+    <!-- قائمة الموظفين -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">👥 قائمة الموظفين</h2>
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b dark:border-gray-700">
+                    <th class="pb-2">الاسم</th>
+                    <th class="pb-2">الفرع</th>
+                    <th class="pb-2">القسم</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr class="border-b dark:border-gray-700 text-center">
+                    <td>{{ emp.user.get_full_name|default:emp.user.username }}</td>
+                    <td>{{ emp.get_branch_display }}</td>
+                    <td>{{ emp.get_department_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- تذييل -->
+    <footer class="mt-12 text-center text-sm text-gray-500 dark:text-gray-400 pb-6">
+        <p>نظام QssunReports &copy; 2025 - تحليلات أداء الفريق</p>
+    </footer>
+
+    <!-- سكريبت الوضع الليلي -->
+    <script>
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            let isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+            document.getElementById('darkModeText').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        // تحميل تفضيل المستخدم عند التحميل
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('darkModeText').textContent = '☀️';
+        }
+    </script>
+
+</body>
+</html>

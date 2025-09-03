@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقاريري - QssunReports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen p-6">
+
+    <!-- الشريط العلوي -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md rounded-lg mb-6 p-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-green-600 dark:text-green-400">تقاريري السابقة</h1>
+        <div class="flex items-center space-x-4 space-x-reverse">
+            <!-- زر الوضع الليلي -->
+            <button onclick="toggleDarkMode()" class="mr-2 text-sm bg-gray-200 dark:bg-gray-700 p-2 rounded">
+                <span id="darkModeText">🌙</span>
+            </button>
+            <a href="{% url 'staff:dashboard' %}" class="text-blue-600 hover:underline">العودة إلى لوحة التحكم</a>
+        </div>
+    </nav>
+
+    <!-- تقارير المبيعات -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6">
+        <h2 class="text-lg font-semibold mb-4 text-blue-700 dark:text-blue-400">📈 تقارير المبيعات</h2>
+        {% if sales_reports %}
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b dark:border-gray-700">
+                        <th class="pb-2">التاريخ</th>
+                        <th class="pb-2">العملاء</th>
+                        <th class="pb-2">الصفقات</th>
+                        <th class="pb-2">القيمة (ريال)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in sales_reports %}
+                    <tr class="border-b dark:border-gray-700 text-center">
+                        <td>{{ r.date }}</td>
+                        <td>{{ r.clients_visited }}</td>
+                        <td>{{ r.deals_closed }}</td>
+                        <td>{{ r.total_value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-gray-500 dark:text-gray-400 mt-4">ما في تقارير مبيعات بعد.</p>
+        {% endif %}
+    </div>
+
+    <!-- تقارير الفنيين -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 mb-6">
+        <h2 class="text-lg font-semibold mb-4 text-green-700 dark:text-green-400">🔧 تقارير الفنيين</h2>
+        {% if field_reports %}
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b dark:border-gray-700">
+                        <th class="pb-2">التاريخ</th>
+                        <th class="pb-2">عدد المواقع</th>
+                        <th class="pb-2">نوع الصيانة</th>
+                        <th class="pb-2">الحالة بعد</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in field_reports %}
+                    <tr class="border-b dark:border-gray-700 text-center">
+                        <td>{{ r.date }}</td>
+                        <td>{{ r.sites_count }}</td>
+                        <td>{{ r.get_maintenance_type_display }}</td>
+                        <td>{{ r.condition_after }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-gray-500 dark:text-gray-400 mt-4">ما في تقارير فنية بعد.</p>
+        {% endif %}
+    </div>
+
+    <!-- ملاحظات العملاء -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+        <h2 class="text-lg font-semibold mb-4 text-yellow-700 dark:text-yellow-400">📞 ملاحظات العملاء</h2>
+        {% if customer_reports %}
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b dark:border-gray-700">
+                        <th class="pb-2">العميل</th>
+                        <th class="pb-2">النوع</th>
+                        <th class="pb-2">الأولوية</th>
+                        <th class="pb-2">الحالة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in customer_reports %}
+                    <tr class="border-b dark:border-gray-700 text-center">
+                        <td>{{ r.customer_name }}</td>
+                        <td>{{ r.get_issue_type_display }}</td>
+                        <td>{{ r.get_priority_display }}</td>
+                        <td>{{ r.get_status_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-gray-500 dark:text-gray-400 mt-4">ما في ملاحظات عملاء بعد.</p>
+        {% endif %}
+    </div>
+
+    <!-- زر الطباعة -->
+    <div class="text-center mt-8">
+        <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded text-lg font-medium transition">
+            🖨 طباعة جميع التقارير
+        </button>
+    </div>
+
+    <!-- سكريبت الوضع الليلي -->
+    <script>
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            let isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+            document.getElementById('darkModeText').textContent = isDark ? '☀️' : '🌙';
+        }
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('darkModeText').textContent = '☀️';
+        }
+    </script>
+</body>
+</html>

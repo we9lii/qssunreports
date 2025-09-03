@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير فني ميداني - QssunReports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen p-6">
+
+    <!-- الشريط العلوي -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md rounded-lg mb-6 p-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-green-600 dark:text-green-400">تقرير فني ميداني</h1>
+        <div class="flex items-center space-x-4 space-x-reverse">
+            <!-- زر الوضع الليلي -->
+            <button onclick="toggleDarkMode()" class="mr-2 text-sm bg-gray-200 dark:bg-gray-700 p-2 rounded">
+                <span id="darkModeText">🌙</span>
+            </button>
+            <a href="{% url 'staff:dashboard' %}" class="text-blue-600 hover:underline">العودة إلى لوحة التحكم</a>
+        </div>
+    </nav>
+
+    <!-- النموذج -->
+    <form method="post" enctype="multipart/form-data" class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 max-w-lg mx-auto">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1 dark:text-gray-300">عدد المواقع</label>
+            <input type="number" name="sites_count" required 
+                   class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded 
+                          bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1 dark:text-gray-300">نوع الصيانة</label>
+            <select name="maintenance_type" required 
+                    class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded 
+                           bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+                <option value="routine">صيانة دورية</option>
+                <option value="repair">إصلاح</option>
+                <option value="installation">تركيب</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1 dark:text-gray-300">الحالة بعد</label>
+            <input type="text" name="condition_after" required 
+                   class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded 
+                          bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1 dark:text-gray-300">رفع صورة (اختياري)</label>
+            <input type="file" name="photo" accept="image/*"
+                   class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded 
+                          bg-white dark:bg-gray-700 text-gray-800 dark:text-white">
+        </div>
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded transition">
+            حفظ التقرير
+        </button>
+    </form>
+
+    <!-- سكريبت الوضع الليلي -->
+    <script>
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            let isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+            document.getElementById('darkModeText').textContent = isDark ? '☀️' : '🌙';
+        }
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('darkModeText').textContent = '☀️';
+        }
+    </script>
+</body>
+</html>

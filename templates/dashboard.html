@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - QssunReports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <style>
+        .card-hover:hover {
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen">
+
+    <!-- الشريط العلوي -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md rounded-lg mb-6 p-4 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-green-600 dark:text-green-400">QssunReports</h1>
+        <div class="flex items-center space-x-4 space-x-reverse">
+            <!-- زر الوضع الليلي -->
+            <button onclick="toggleDarkMode()" class="mr-2 text-sm bg-gray-200 dark:bg-gray-700 p-2 rounded">
+                <span id="darkModeText">🌙</span>
+            </button>
+            {% if employee %}
+                <span class="text-sm">مرحباً، <strong>{{ employee.user.first_name }}</strong></span>
+            {% endif %}
+            <a href="{% url 'staff:dashboard' %}" class="text-blue-600 dark:text-blue-400 text-sm">الرئيسية</a>
+            <a href="{% url 'logout' %}" class="text-red-600 dark:text-red-400 text-sm">خروج</a>
+        </div>
+    </nav>
+
+    <!-- تنبيه الإشعارات -->
+    {% if notifications %}
+        <div class="bg-yellow-100 dark:bg-yellow-900 border-l-4 border-yellow-500 text-yellow-700 dark:text-yellow-300 p-4 rounded mb-6 mx-4 max-w-lg animate-pulse">
+            <strong>🔔 إشعار جديد!</strong>
+            <p class="text-sm mt-1">{{ notifications.0.title }}</p>
+        </div>
+    {% endif %}
+
+    <!-- البطاقات الرئيسية -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 max-w-7xl mx-auto">
+
+        <!-- بطاقة: أضف تقرير اليوم -->
+        <a href="{% url 'reports:create_report' %}" class="block p-6 bg-white dark:bg-gray-800 shadow rounded-lg border border-green-200 dark:border-green-800 hover:shadow-lg card-hover text-center">
+            <div class="text-4xl mb-2">📝</div>
+            <h3 class="font-semibold text-green-700 dark:text-green-400">أضف تقرير اليوم</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">اختر نوع التقرير</p>
+        </a>
+
+        <!-- بطاقة: تقاريري السابقة -->
+        <a href="{% url 'reports:my_reports' %}" class="block p-6 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900 transition card-hover text-center">
+            <div class="text-4xl mb-2">📄</div>
+            <h3 class="font-semibold">تقاريري السابقة</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">عرض جميع التقارير</p>
+        </a>
+
+        <!-- بطاقة: تقرير المبيعات -->
+        <a href="{% url 'reports:create_sales' %}" class="block p-6 bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 rounded-lg text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900 transition card-hover text-center">
+            <div class="text-4xl mb-2">📈</div>
+            <h3 class="font-semibold">تقرير المبيعات</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">أضف تقرير يومي</p>
+        </a>
+
+        <!-- بطاقة: تقرير فني ميداني -->
+        <a href="{% url 'reports:create_field' %}" class="block p-6 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900 transition card-hover text-center">
+            <div class="text-4xl mb-2">🔧</div>
+            <h3 class="font-semibold">تقرير فني ميداني</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">صيانة، تركيب، إصلاح</p>
+        </a>
+
+        <!-- بطاقة: ملاحظة عميل -->
+        <a href="{% url 'reports:create_customer' %}" class="block p-6 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900 transition card-hover text-center">
+            <div class="text-4xl mb-2">📞</div>
+            <h3 class="font-semibold">ملاحظة عميل</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">شكوى، اقتراح، شكر</p>
+        </a>
+
+        <!-- بطاقة: لوحة التحليلات -->
+        <a href="{% url 'staff:analytics' %}" class="block p-6 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800 rounded-lg text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition card-hover text-center">
+            <div class="text-4xl mb-2">📊</div>
+            <h3 class="font-semibold">لوحة التحليلات</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">عرض الإحصائيات</p>
+        </a>
+
+        <!-- بطاقة: إدارة المستخدمين (للمديرين فقط) -->
+        {% if request.user.is_superuser %}
+        <a href="/admin/" class="block p-6 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 transition card-hover text-center">
+            <div class="text-4xl mb-2">⚙️</div>
+            <h3 class="font-semibold">لوحة الإدارة</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">إدارة الموظفين والبيانات</p>
+        </a>
+        {% endif %}
+
+    </div>
+
+    <!-- تذييل -->
+    <footer class="mt-12 text-center text-sm text-gray-500 dark:text-gray-400 pb-6">
+        <p>نظام QssunReports &copy; 2025 - طاقة العمل الذكية</p>
+    </footer>
+
+    <!-- سكريبت الوضع الليلي -->
+    <script>
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            let isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+            document.getElementById('darkModeText').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        // تحميل تفضيل المستخدم عند التحميل
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('darkModeText').textContent = '☀️';
+        }
+    </script>
+
+</body>
+</html>
