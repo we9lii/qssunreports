@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-x5ec&n0r!ch1dwd!lpovq8+o0v9*6(8uglocd@y+c$#go#e3x_
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'https://qssunreports-3.onrender.com',
+    'qssunreports-3.onrender.com',
     'localhost',
     '127.0.0.1',
 ]
