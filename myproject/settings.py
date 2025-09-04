@@ -30,11 +30,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key-for-dev')
 DEBUG = os.environ.get('PYTHON_ENV') != 'production'
 
 # --- التعديل الأهم: السماح لموقع Render بالوصول ---
-ALLOWED_HOSTS = [
-    '.onrender.com',
-    'localhost',
-    '127.0.0.1'
-]
+ALLOWED_HOSTS = ['qssunreports-3.onrender.com/', 'localhost', '127.0.0.1']
 
 
 # Application definition
