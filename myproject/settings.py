@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'reports',  # Your app
+    'reports', # تطبيقك الأول
+    'staff',   # تطبيقك الثاني الذي نسيناه
 ]
 
 MIDDLEWARE = [
