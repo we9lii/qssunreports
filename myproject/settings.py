@@ -75,7 +75,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'qssunreports.wsgi.application'
+WSGI_APPLICATION = 'myproject.wsgi.application'
 
 
 # --- التعديل الثاني: إعدادات قاعدة البيانات الديناميكية ---
