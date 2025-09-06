@@ -1,3 +1,4 @@
+{% load time_greetings %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -26,7 +27,7 @@
                 <span id="darkModeText">🌙</span>
             </button>
             {% if employee %}
-                <span class="text-sm">مرحباً، <strong>{{ employee.user.first_name }}</strong></span>
+                <span class="text-sm">{% get_time_greeting %}، <strong>{{ employee.user.first_name }}</strong></span>
             {% endif %}
             <a href="{% url 'staff:dashboard' %}" class="text-blue-600 dark:text-blue-400 text-sm">الرئيسية</a>
             <a href="{% url 'logout' %}" class="text-red-600 dark:text-red-400 text-sm">خروج</a>
